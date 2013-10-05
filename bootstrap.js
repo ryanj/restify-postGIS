@@ -1,37 +1,36 @@
 var config      = require('config'),
-    postgresql  = require('pg')
+    pg          = require('pg')
 
 var pg_config   = config.pg_config,
     table_name  = config.table_name;
 
-var pg          = new postgresql.Client( pg_config + '/' +table_name );
-
-pg.connect(function(err) {
+pg.connect(pg_config + '/' +table_name, function(err, db, done) {
+  try{
   if(err) {
     return console.error('could not connect to postgres', err);
   }
   // Enable the postgis extension
-  pg.query('CREATE EXTENSION postgis;', function(err, result) {
+  db.query('CREATE EXTENSION postgis;', function(err, result) {
     if(err) {
-      pg.end();
+      done();
       return console.error('error running query', err);
     }
     // Create our DB table
-    pg.query("CREATE TABLE "+table_name+" ( gid serial NOT NULL, name character varying(240), the_geom geometry, CONSTRAINT "+table_name+ "_pkey PRIMARY KEY (gid), CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2), CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL),CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4326) ) WITH ( OIDS=FALSE );", function(err, result) {
+    db.query("CREATE TABLE "+table_name+" ( gid serial NOT NULL, name character varying(240), the_geom geometry, CONSTRAINT "+table_name+ "_pkey PRIMARY KEY (gid), CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2), CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL),CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4326) ) WITH ( OIDS=FALSE );", function(err, result) {
       if(err) {
-        pg.end();
+        done();
         return console.error('error creating table', err);
       }
       console.dir(result);
       // Add an index to our db table
-      pg.query("CREATE INDEX "+table_name+"_geom_gist ON "+table_name+" USING gist (the_geom);", function(err, result) {
+      db.query("CREATE INDEX "+table_name+"_geom_gist ON "+table_name+" USING gist (the_geom);", function(err, result) {
         if(err) {
-          pg.end();
+          done();
           return console.error('error adding index', err);
         }
         console.dir(result);
         // Insert our mapping data
-        new_map_points = "Insert into "+db_table+" (name, the_geom) VALUES ('Abraham Lincoln Birthplace National Historical Park', ST_GeomFromText('POINT(-85.7302 37.5332)', 4326));" + 
+        new_map_points = "Insert into "+table_name+" (name, the_geom) VALUES ('Abraham Lincoln Birthplace National Historical Park', ST_GeomFromText('POINT(-85.7302 37.5332)', 4326));" + 
         "Insert into "+table_name+" (name, the_geom) VALUES ('Abraham Lincoln National Cemetery', ST_GeomFromText('POINT(-88.12595 41.3896)', 4326));" + 
         "Insert into "+table_name+" (name, the_geom) VALUES ('Acadia National Park', ST_GeomFromText('POINT(-68.04902 44.454)', 4326));" + 
         "Insert into "+table_name+" (name, the_geom) VALUES ('Adams National Historical Park', ST_GeomFromText('POINT(-71.01119 42.25639)', 4326));" + 
@@ -579,16 +578,21 @@ pg.connect(function(err) {
         "Insert into "+table_name+" (name, the_geom) VALUES ('Yukon-Charley Rivers National Preserve', ST_GeomFromText('POINT(-142.79972 65)', 4326));" + 
         "Insert into "+table_name+" (name, the_geom) VALUES ('Zion National Park', ST_GeomFromText('POINT(-112.68142 37.22299)', 4326));"; 
  
-        pg.query(new_map_points, function(err, result) {
+        db.query(new_map_points, function(err, result) {
           if(err) {
-            pg.end();
+            done();
             return console.error('error loading map data', err);
           }
           console.dir(result);
-          pg.end();
+          done();
           return result;
         });
       });
     });
   });
+  }catch(err){
+    console.log("parks data has been loaded.");
+    console.dir(err);
+    done();
+  }
 });

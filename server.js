@@ -1,13 +1,12 @@
 var config      = require('config'),
     restify     = require('restify'),
     fs          = require('fs'),
-    postgresql  = require('pg')
+    pg          = require('pg')
 
 var pg_config   = config.pg_config,
     table_name  = config.table_name;
 
 var app         = restify.createServer()
-var pg          = new postgresql.Client( pg_config + '/' +table_name );
 
 app.use(restify.queryParser())
 app.use(restify.CORS())
@@ -27,40 +26,44 @@ app.get('/parks/within', function (req, res, next){
     res.send(500, {http_status:400,error_msg: "this endpoint requires two pair of lat, long coordinates: lat1 lon1 lat2 lon2"});
     return console.error('could not connect to postgres', err);
   }
-  pg.connect(function(err) {
+  pg.connect(pg_config + '/' +table_name, function(err, db, done) {
     if(err) {
       res.send(500, {http_status:500,error_msg: err})
-      pg.end();
+      db.end();
       return console.error('could not connect to postgres', err);
     }
-    pg.query('SELECT gid,name,ST_X(the_geom) as lon,ST_Y(the_geom) as lat FROM ' + table_name+ ' t WHERE ST_Intersects( ST_MakeEnvelope('+query.lon1+", "+query.lat1+", "+query.lon2+", "+query.lat2+", 4326), t.the_geom) LIMIT "+limit+';', function(err, result) {
+    db.query('SELECT gid,name,ST_X(the_geom) as lon,ST_Y(the_geom) as lat FROM ' + table_name+ ' t WHERE ST_Intersects( ST_MakeEnvelope('+query.lon1+", "+query.lat1+", "+query.lon2+", "+query.lat2+", 4326), t.the_geom) LIMIT "+limit+';', function(err, result) {
       if(err) {
         res.send(500, {http_status:500,error_msg: err})
-        pg.end();
+        db.end();
         return console.error('error running query', err);
       }
       console.dir(result);
       res.send(result.rows);
-      pg.end();
+      db.end();
+      done();
+      return result.rows;
     });
   });
 });
 app.get('/parks', function (req, res, next){
-  pg.connect(function(err) {
+  pg.connect(pg_config + '/' +table_name, function(err, db, done) {
     if(err) {
       res.send(500, {http_status:500,error_msg: err})
-      pg.end();
+      db.end();
       return console.error('could not connect to postgres', err);
     }
-    pg.query('SELECT gid,name,ST_X(the_geom) as lon,ST_Y(the_geom) as lat FROM ' + table_name +';', function(err, result) {
+    db.query('SELECT gid,name,ST_X(the_geom) as lon,ST_Y(the_geom) as lat FROM ' + table_name +';', function(err, result) {
       if(err) {
         res.send(500, {http_status:500,error_msg: err})
-        pg.end();
+        db.end();
         return console.error('error running query', err);
       }
       console.dir(result);
       res.send(result.rows);
-      pg.end();
+      db.end();
+      done();
+      return result.rows;
     });
   });
 });
