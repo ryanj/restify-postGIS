@@ -22,7 +22,7 @@ pg.connect(function(err) {
       }
       console.dir(result);
       // Add an index to our db table
-      pg.query("CREATE INDEX "+table_name+"_geom_gist ON "+table_name+"USING gist (the_geom);", function(err, result) {
+      pg.query("CREATE INDEX "+table_name+"_geom_gist ON "+table_name+" USING gist (the_geom);", function(err, result) {
         if(err) {
           return console.error('error adding index', err);
         }
