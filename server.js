@@ -19,10 +19,12 @@ app.get('/parks/within', function (req, res, next){
   //res.send(points);
   //clean these variables:
   var query = req.query;
+  var limit = (typeof(query.limit) !== "undefined") ? query.limit : 40;
   if(!(Number(query.lat1) 
     && Number(query.lon1) 
     && Number(query.lat2) 
-    && Number(query.lon2)))
+    && Number(query.lon2)
+    && Number(limit)))
   {
     res.send(500, {http_status:400,error_msg: "this endpoint requires two pair of lat, long coordinates: lat1 lon1 lat2 lon2"});
     return console.error('could not connect to postgres', err);
@@ -32,7 +34,6 @@ app.get('/parks/within', function (req, res, next){
       res.send(500, {http_status:500,error_msg: err})
       return console.error('could not connect to postgres', err);
     }
-    var limit = 40;
     pg.query('SELECT gid,name,ST_X(the_geom) as lon,ST_Y(the_geom) as lat FROM ' + table_name+ ' WHERE ST_Intersects( ST_MakeEnvelope('+query.lon1+", "+query.lat1+", "+query.lon2+", "+query.lat2+", 4326), t.the_geom) LIMIT "+limit+';', function(err, result) {
       if(err) {
         res.send(500, {http_status:500,error_msg: err})

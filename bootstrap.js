@@ -13,17 +13,20 @@ pg.connect(function(err) {
   // Enable the postgis extension
   pg.query('CREATE EXTENSION postgis;', function(err, result) {
     if(err) {
+      pg.end();
       return console.error('error running query', err);
     }
     // Create our DB table
     pg.query("CREATE TABLE "+table_name+" ( gid serial NOT NULL, name character varying(240), the_geom geometry, CONSTRAINT "+table_name+ "_pkey PRIMARY KEY (gid), CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2), CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL),CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4326) ) WITH ( OIDS=FALSE );", function(err, result) {
       if(err) {
+        pg.end();
         return console.error('error creating table', err);
       }
       console.dir(result);
       // Add an index to our db table
       pg.query("CREATE INDEX "+table_name+"_geom_gist ON "+table_name+" USING gist (the_geom);", function(err, result) {
         if(err) {
+          pg.end();
           return console.error('error adding index', err);
         }
         console.dir(result);
@@ -578,9 +581,12 @@ pg.connect(function(err) {
  
         pg.query(new_map_points, function(err, result) {
           if(err) {
+            pg.end();
             return console.error('error loading map data', err);
           }
           console.dir(result);
+          pg.end();
+          return result;
         });
       });
     });
