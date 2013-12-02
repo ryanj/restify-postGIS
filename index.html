@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <title>Map of parks</title>
+  <title>Map of Parks and Historic Sites</title>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
     <link rel="stylesheet" href="css/ribbon.css" />
   <!--[if lte IE 8]>
@@ -29,11 +29,11 @@
  
 </head>
 <body>
-  <h1 id="title">National Park Locator</h1>
+  <h1 id="title">National Parks</h1>
   <div id="map"></div>
   <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
   <script>
-    var map = L.map('map').setView([42.35, -71.06], 12);
+    var map = L.map('map').setView([37.8, -122.3], 10);
     var markerLayerGroup = L.layerGroup().addTo(map);
     L.tileLayer('http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.png', {
       maxZoom: 18,
