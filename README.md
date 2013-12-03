@@ -12,21 +12,23 @@ Or, [link to a web-based **clone+deploy**](https://openshift.redhat.com/app/cons
 
 A live demo is available at: [http://nodegis-shifter.rhcloud.com/](http://nodegis-shifter.rhcloud.com/)
 
-### Local Development
+## Local Development
 Before you spin up a local server, you'll need a copy of the source code.
 
-If you created a clone of the application using the `rhc` command (above), then you should already have a local copy of the source code available.  If not, you can try cloning the repo using `git`, or take advantage of the `rhc git-clone` command to create a local copy of your project source.
+If you created a clone of the application using the `rhc` command (above), then you should already have a local copy of the source code available.  If not, you can try cloning the repo using `git`, or taking advantage of the `rhc git-clone` command to fetch a local clone of any of your existing OpenShift applications:
 
     rhc git-clone parks
 
-OpenShift will automatically resolve `package.json` dependencies for hosted applications using an automated build process.  In your local development environment, you'll need to run `npm install` to make sure that your application's package dependencies have been made available:
+OpenShift will automatically resolve `package.json` dependencies for hosted applications as a normal part of it's automated build process.  In your local development environment, you'll need to run `npm install` in order to ensure that your application's package dependencies are available:
 
     npm install
 
-### Local DB access
-You can set up your own postgreSQL database for local development.  But, OpenShift provides a great way to get connected to your hosted database in mere seconds.  
+### Using port-forwarding for local DB access
+You can set up your own postgreSQL database for local development.  But, OpenShift provides a great way to get connected to your fully hosted and configured PostgreSQL database in mere seconds.  
 
-The `rhc port-forward` command can help you set up a local connection to your remote DB, where your DB permissions, table schema, and map data have already been initialized.  The command output will provide your local connection details:
+The `rhc port-forward` command establishes a local connection to your hosted database, where your DB permissions, table schema, and map data have already been initialized.  
+
+The command output will provides your local connection details:
 
     Service    Local               OpenShift
     ---------- -------------- ---- ----------------
@@ -35,10 +37,10 @@ The `rhc port-forward` command can help you set up a local connection to your re
 
     Press CTRL-C to terminate port forwarding
 
-Make a note of the local postgresql IP address and port number, and leave the command running in order to keep the connection open.  We will need to use these values ("`127.0.0.1:5433`" in the above example) in the next step.
+Make a note of the *local* postgresql IP address and port number, and leave the command running (in order to keep the connection open).  We will need to use these values in the next step.
 
-### Configuration with environment variables
-This app uses the `config` npm module, which loads it's configuration details from `config/defaults.json`.  Inside this file, we can see that the app is configured to take advantage of several environment variables (whenever they are available):
+### Basic Configuration
+This app uses the `config` npm module, which loads it's configuration details from the `config/defaults.json` file.  The app is configured to take advantage of several environment variables (when available):
 
     module.exports = {
       port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000,
@@ -53,26 +55,29 @@ These additional access keys are printed out as your application is created.  Yo
 
     rhc app show parks
 
+
+### Environment Variables
 Now, set your `OPENSHIFT_POSTGRESQL_DB_URL` environment variable, substituting your own `DB_USERNAME`, `DB_PASSWORD`, `LOCAL_DB_IP`, and `LOCAL_DB_PORT`:
 
-    export OPENSHIFT_POSTGRESQL_DB_URL="postgres://DB_USERNAME:DB_PASSWORD@LOCAL_DB_IP:LOCAL_DB_PORT
+    export OPENSHIFT_POSTGRESQL_DB_URL="postgres://DB_USERNAME:DB_PASSWORD@LOCAL_DB_IP:LOCAL_DB_PORT"
 
-Mine looks like this:
+My application's command ended up looking like this:
 
-    export OPENSHIFT_POSTGRESQL_DB_URL="postgres://admin32jk510:X_kgB-3LfUd3@127.0.0.1:5433
+    export OPENSHIFT_POSTGRESQL_DB_URL="postgres://admin32jk510:X_kgB-3LfUd3@127.0.0.1:5433"
 
-This application also expects to use a Postgres `table_name` that matches your application's name (as defined within OpenShift).  When running this application on OpenShift, the `OPENSHIFT_APP_NAME` environment variable will be automatically populated.  If you didn't name your application "parks" (the default value for this option), then you will likely need to set an extra environment variable in your local development environment:
+This app also expects to use a Postgres `table_name` that matches your application's name (as defined within OpenShift).  When running this application on OpenShift, the `OPENSHIFT_APP_NAME` environment variable will be automatically populated.  If you didn't name your application "parks" (the default value for this option), then you will likely need to set an extra environment variable containing your table name in your local dev environment:
 
     export OPENSHIFT_APP_NAME=parks
 
-Start your local webserver with:
+#### Starting your Local Webserver
+Now, you should be able to fire up a local server with:
 
     npm start
 
-Your local development server should be available at the default address: [localhost:3000](http://localhost:3000)
+Your development server should be available at the default address: [localhost:3000](http://localhost:3000)
 
 ## Deploying updates to OpenShift
-When you're ready, push changes to your OpenShift-hosted application environment using a standard `git` workflow:
+When you're ready, you can push changes to your OpenShift-hosted application environment using the standard `git` workflow:
 
 1. Add your changes to a changeset:
 
