@@ -1,6 +1,6 @@
 {
   "name": "PostGIS-Parks",
-  "description": "A simple National Parks app, powered by postGIS and Leaflet maps",
+  "description": "A simple mapping application for finding National Parks and Historic Sites, powered by postGIS and Leaflet maps",
   "version": "0.0.1",
   "private": true,
   "engines": {
@@ -11,14 +11,10 @@
     "config": "0.4.x",
     "requireindex": "1.0.x",
     "restify": "2.5.x",
-    "pg": "~2.7.0",
-    "step": "0.0.5",
-    "domain": "~0.1.5",
-    "buffer-writer": "~1.0.0",
-    "generic-pool": "~2.0.4"
+    "pg-query": "~0.7.0",
+    "pg": "~2.8.3"
   },
   "devDependencies": {
-    "jasmine-node": "1.6.x",
     "request": "2.24.x"
   },
   "repository": {
@@ -26,7 +22,9 @@
     "url": "https://github.com/ryanj/restify-postGIS.git"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "npm run initdb",
+    "initdb": "node bin/bootstrap.js"
   },
   "main": "server.js"
 }

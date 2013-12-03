@@ -1,4 +1,4 @@
 #!/bin/bash
 pushd $OPENSHIFT_REPO_DIR
-node bootstrap.js
+npm run initdb
 popd
