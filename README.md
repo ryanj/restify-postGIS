@@ -1,37 +1,33 @@
-# Map of National Parks and Historic Sites
+# National Parks and Historic Sites
 *powered by RESTify, PostGIS, and Leaflet maps*
 
-To deploy a clone of this application using the [`rhc` command line tool](http://rubygems.org/gems/rhc):
+## Hosting on OpenShift
+To deploy a clone of this application using the [`rhc` command line tool](http://rubygems.org/gems/rhc), type:
 
     rhc app create parks nodejs-0.10 postgresql-9.2 --from-code=https://github.com/ryanj/restify-postGIS.git
     
-Or [link to a web-based clone+deploy](https://openshift.redhat.com/app/console/application_type/custom?cartridges%5B%5D=nodejs-0.10&cartridges%5B%5D=postgresql-9.2&initial_git_url=https%3A%2F%2Fgithub.com%2Fryanj%2Frestify-postGIS.git) on [OpenShift Online](http://OpenShift.com) or on [your own OpenShift cloud](http://openshift.github.io): 
+Or, [link to a web-based **clone+deploy**](https://openshift.redhat.com/app/console/application_type/custom?name=parks&cartridges%5B%5D=nodejs-0.10&cartridges%5B%5D=postgresql-9.2&initial_git_url=https%3A%2F%2Fgithub.com%2Fryanj%2Frestify-postGIS.git) on [OpenShift Online](http://OpenShift.com) or [your own open cloud](http://openshift.github.io): 
 
-    https://openshift.redhat.com/app/console/application_type/custom?cartridges%5B%5D=nodejs-0.10&cartridges%5B%5D=postgresql-9.2&initial_git_url=https%3A%2F%2Fgithub.com%2Fryanj%2Frestify-postGIS.git
+    https://openshift.redhat.com/app/console/application_type/custom?name=parks&cartridges%5B%5D=nodejs-0.10&cartridges%5B%5D=postgresql-9.2&initial_git_url=https%3A%2F%2Fgithub.com%2Fryanj%2Frestify-postGIS.git
 
 A live demo is available at: [http://nodegis-shifter.rhcloud.com/](http://nodegis-shifter.rhcloud.com/)
 
-## Local Development
-Before you spin up a local server, you'll need a copy of the project source.  If created a copy of the application using the `rhc` command (above), then you should already have a local repo to work with.
+### Local Development
+Before you spin up a local server, you'll need a copy of the source code.
 
-If not, you can try cloning this repo, or using the `rhc git-clone` command to create a local copy of your OpenShift project's source.
+If you created a clone of the application using the `rhc` command (above), then you should already have a local copy of the source code available.  If not, you can try cloning the repo using `git`, or take advantage of the `rhc git-clone` command to create a local copy of your project source.
 
-Once our local project source is available, we'll need to install our application dependencies.  OpenShift will automatically install dependencies for all hosted applications.  You can manually install local dependencies from the command line using `npm`:
+    rhc git-clone parks
+
+OpenShift will automatically resolve `package.json` dependencies for hosted applications using an automated build process.  In your local development environment, you'll need to run `npm install` to make sure that your application's package dependencies have been made available:
 
     npm install
 
 ### Local DB access
-Feel free to set up your own local postgreSQL database for development (if needed).  However, OpenShift provides a great way to get connected to a hosted pg database in mere seconds.  The `rhc port-forward` can help you make the connection:
+You can set up your own postgreSQL database for local development.  But, OpenShift provides a great way to get connected to your hosted database in mere seconds.  
 
-    rhc port-forward
+The `rhc port-forward` command can help you set up a local connection to your remote DB, where your DB permissions, table schema, and map data have already been initialized.  The command output will provide your local connection details:
 
-The command output should look something like this:
-
-    Checking available ports ... done
-    Forwarding ports ...
-    
-    To connect to a service running on OpenShift, use the Local address
-    
     Service    Local               OpenShift
     ---------- -------------- ---- ----------------
     node       127.0.0.1:8080  =>  127.5.199.1:8080
@@ -39,41 +35,56 @@ The command output should look something like this:
 
     Press CTRL-C to terminate port forwarding
 
-Note your **local** postgresql IP address and port number, and leave the command running in order to keep the connection open.  We will need these values (`127.0.0.1:5433` in the above example) in the next step.
+Make a note of the local postgresql IP address and port number, and leave the command running in order to keep the connection open.  We will need to use these values ("`127.0.0.1:5433`" in the above example) in the next step.
 
-### Environment variables
-Next, take a look at our application's `config/defaults.json` settings file to see if any environment variables need to be defined:
+### Configuration with environment variables
+This app uses the `config` npm module, which loads it's configuration details from `config/defaults.json`.  Inside this file, we can see that the app is configured to take advantage of several environment variables (whenever they are available):
 
     module.exports = {
       port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000,
       ip: process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
       pg_config: process.env.OPENSHIFT_POSTGRESQL_DB_URL || 'postgresql://127.0.0.1:5432',
-      table_name: process.env.OPENSHIFT_APP_NAME || 'nodegis'
+      table_name: process.env.OPENSHIFT_APP_NAME || 'parks'
     }
 
-This application expects to use a Postgres `table_name` that matches your application's name (as defined within OpenShift).  When running this application on OpenShift, the `OPENSHIFT_APP_NAME` environment variable will be automatically populated.  
+Sensible defaults allow us to run the same code in multiple environments. If you plan on using the port-forwarded DB connection from the [previous step](#local-db-access), you'll need to supply some additional DB authentication credentials via the `OPENSHIFT_POSTGRESQL_DB_URL` environment variable. 
 
-You can set the `OPENSHIFT_APP_NAME` environment variable in your local development environment to allow you application to connect to the correct database table:
+These additional access keys are printed out as your application is created.  You can also access them by running the `rhc app show` command.
 
-    export OPENSHIFT_APP_NAME="nodegis"
+    rhc app show parks
 
+Now, set your `OPENSHIFT_POSTGRESQL_DB_URL` environment variable, substituting your own `DB_USERNAME`, `DB_PASSWORD`, `LOCAL_DB_IP`, and `LOCAL_DB_PORT`:
 
+    export OPENSHIFT_POSTGRESQL_DB_URL="postgres://DB_USERNAME:DB_PASSWORD@LOCAL_DB_IP:LOCAL_DB_PORT
 
-`rhc app show nodegis`
+Mine looks like this:
 
-     export OPENSHIFT_POSTGRESQL_DB_URL="postgres://admin32jk510:X_kgB-3LfUd3@127.0.0.1:5433
+    export OPENSHIFT_POSTGRESQL_DB_URL="postgres://admin32jk510:X_kgB-3LfUd3@127.0.0.1:5433
 
-Now we can start our local webserver with:
+This application also expects to use a Postgres `table_name` that matches your application's name (as defined within OpenShift).  When running this application on OpenShift, the `OPENSHIFT_APP_NAME` environment variable will be automatically populated.  If you didn't name your application "parks" (the default value for this option), then you will likely need to set an extra environment variable in your local development environment:
+
+    export OPENSHIFT_APP_NAME=parks
+
+Start your local webserver with:
 
     npm start
 
-Access your local development server at: [localhost:3000](http://localhost:3000)
+Your local development server should be available at the default address: [localhost:3000](http://localhost:3000)
 
 ## Deploying updates to OpenShift
+When you're ready, push changes to your OpenShift-hosted application environment using a standard `git` workflow:
 
-1. git add filename
-2. git commit -m 'describe your change'
-3. git push
+1. Add your changes to a changeset:
+
+    git add filename
+
+2. Mark the changeset as a Commit
+
+    git commit -m 'describe your change'
+
+3. Push the Commit to OpenShift
+
+    git push
 
 ## License
 This code is dedicated to the public domain to the maximum extent permitted by applicable law, pursuant to CC0 (http://creativecommons.org/publicdomain/zero/1.0/)
