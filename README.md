@@ -3,7 +3,7 @@
 
 <a href='http://nodegis-shifter.rhcloud.com/'><img src='https://www.openshift.com/sites/default/files/Parks_preview.png'/></a>
 
-Related post on OpenShift.com:  
+Related post on OpenShift.com: [https://www.openshift.com/blogs/instant-mapping-applications-with-postgis-and-nodejs](https://www.openshift.com/blogs/instant-mapping-applications-with-postgis-and-nodejs)
 
 ## Hosting on OpenShift
 To deploy a clone of this application using the [`rhc` command line tool](http://rubygems.org/gems/rhc), type:
