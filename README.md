@@ -1,5 +1,9 @@
-# National Parks and Historic Sites
+# Map of National Parks and Historic Sites
 *powered by RESTify, PostGIS, and Leaflet maps*
+
+<a href='http://nodegis-shifter.rhcloud.com/'><img src='https://www.openshift.com/sites/default/files/Parks_preview.png'/></a>
+
+Related post on OpenShift.com:  
 
 ## Hosting on OpenShift
 To deploy a clone of this application using the [`rhc` command line tool](http://rubygems.org/gems/rhc), type:
@@ -13,7 +17,7 @@ Or, [link to a web-based **clone+deploy**](https://openshift.redhat.com/app/cons
 A live demo is available at: [http://nodegis-shifter.rhcloud.com/](http://nodegis-shifter.rhcloud.com/)
 
 ## Local Development
-Before you spin up a local server, you'll need a copy of the source code.
+Before you spin up a local server, you'll need a copy of the source code, and an installation of [nodejs](http://nodejs.org/).
 
 If you created a clone of the application using the `rhc` command (above), then you should already have a local copy of the source code available.  If not, you can try cloning the repo using `git`, or taking advantage of the `rhc git-clone` command to fetch a local clone of any of your existing OpenShift applications:
 
@@ -23,7 +27,7 @@ OpenShift will automatically resolve `package.json` dependencies for hosted appl
 
     npm install
 
-### Using port-forwarding for local DB access
+### port-forwarding for local access to your remote db
 You can set up your own postgreSQL database for local development.  But, OpenShift provides a great way to get connected to your fully hosted and configured PostgreSQL database in mere seconds.  
 
 The `rhc port-forward` command establishes a local connection to your hosted database, where your DB permissions, table schema, and map data have already been initialized.  
@@ -40,7 +44,7 @@ The command output will provides your local connection details:
 Make a note of the *local* postgresql IP address and port number, and leave the command running (in order to keep the connection open).  We will need to use these values in the next step.
 
 ### Basic Configuration
-This app uses the `config` npm module, which loads it's configuration details from the `config/defaults.json` file.  The app is configured to take advantage of several environment variables (when available):
+This app uses the `config` npm module, which loads it's configuration details from the `config/defaults.json` file.  This configuration takes advantage of several environment variables whenever they are available.  On OpenShift, many of these values are automatically provided for your application by their associated cartridge add-on service:
 
     module.exports = {
       port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000,
@@ -49,12 +53,13 @@ This app uses the `config` npm module, which loads it's configuration details fr
       table_name: process.env.OPENSHIFT_APP_NAME || 'parks'
     }
 
-Sensible defaults allow us to run the same code in multiple environments. If you plan on using the port-forwarded DB connection from the [previous step](#local-db-access), you'll need to supply some additional DB authentication credentials via the `OPENSHIFT_POSTGRESQL_DB_URL` environment variable. 
+Sensible defaults allow us to run the same code in multiple environments. 
 
-These additional access keys are printed out as your application is created.  You can also access them by running the `rhc app show` command.
+If you plan on using the port-forwarded DB connection from the [previous step](#local-db-access) in your local development stage, then you will need to supply some additional DB authentication credentials to your application via the `OPENSHIFT_POSTGRESQL_DB_URL` environment variable. 
+
+You can find this information by running `env` while connected to your OpenShift-hosted application over ssh, or by running the `rhc app show` command from your local machine.
 
     rhc app show parks
-
 
 ### Environment Variables
 Now, set your `OPENSHIFT_POSTGRESQL_DB_URL` environment variable, substituting your own `DB_USERNAME`, `DB_PASSWORD`, `LOCAL_DB_IP`, and `LOCAL_DB_PORT`:
@@ -81,15 +86,15 @@ When you're ready, you can push changes to your OpenShift-hosted application env
 
 1. Add your changes to a changeset:
 
-    git add filename
+    `git add filename1 filename2`
 
-2. Mark the changeset as a Commit
+2. Mark the changeset as a Commit:
 
-    git commit -m 'describe your change'
+    `git commit -m 'describe your changes here'`
 
 3. Push the Commit to OpenShift
 
-    git push
+    `git push`
 
 ## License
 This code is dedicated to the public domain to the maximum extent permitted by applicable law, pursuant to CC0 (http://creativecommons.org/publicdomain/zero/1.0/)
