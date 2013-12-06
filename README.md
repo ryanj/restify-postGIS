@@ -74,12 +74,25 @@ This app also expects to use a Postgres `table_name` that matches your applicati
 
     export OPENSHIFT_APP_NAME=parks
 
+#### Testing your connection
+You can verify that your port-forwarding tunnel is active, and that your environment variables are configured correctly by using them to make a DB connection using the `psql` command-line client:
+
+    psql $OPENSHIFT_POSTGRESQL_DB_URL/$OPENSHIFT_APP_NAME
+
+This should provide a direct connection to your OpenShift-hosted database instance.
+
+Here you can verify that your application's [automatic database import procedures](https://www.openshift.com/blogs/instant-mapping-applications-with-postgis-and-nodejs#bootstrapping) have successfully completed, by checking the number of records in our DB table:
+
+    select count(*) from parks;
+
+The result should be `547`.  As usual, if you named your application something other than `parks`, you'll need to modify above the command to match your particular configuration.
+
 #### Starting your Local Webserver
-Now, you should be able to fire up a local server with:
+With your dependencies installed, your port-forwarding tunnel established, and your environment variables set, firing up a local server should be as simple as typing:
 
     npm start
 
-Your development server should be available at the default address: [localhost:3000](http://localhost:3000)
+Your dev server should be available at the default address: [localhost:3000](http://localhost:3000)
 
 ## Deploying updates to OpenShift
 When you're ready, you can push changes to your OpenShift-hosted application environment using the standard `git` workflow:
