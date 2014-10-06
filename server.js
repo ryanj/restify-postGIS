@@ -1,8 +1,10 @@
-var config      = require('config'),
+var cc          = require('config-multipaas'),
     restify     = require('restify'),
     fs          = require('fs'),
-    db          = require('./bin/db.js')
+    path        = require('path'),
+    db          = require(path.join(__dirname,'bin','db.js'))
 
+var config      = cc()
 var app         = restify.createServer()
 
 app.use(restify.queryParser())
@@ -19,14 +21,14 @@ app.get('/status', function (req, res, next)
 
 app.get('/', function (req, res, next)
 {
-  var data = fs.readFileSync(__dirname + '/index.html');
+  var data = fs.readFileSync(path.join(__dirname, 'index.html'));
   res.status(200);
   res.header('Content-Type', 'text/html');
   res.end(data.toString().replace(/host:port/g, req.header('Host')));
 });
 
-app.get(/\/(css|js|img)\/?.*/, restify.serveStatic({directory: './static/'}));
+app.get(/\/(css|js|img)\/?.*/, restify.serveStatic({directory: path.join(__dirname,'static')}));
 
-app.listen(config.port, config.ip, function () {
-  console.log( "Listening on " + config.ip + ", port " + config.port )
+app.listen(config.get('PORT'), config.get('IP'), function () {
+  console.log( "Listening on " + config.get('IP') + ", port " + config.get('PORT') )
 });
