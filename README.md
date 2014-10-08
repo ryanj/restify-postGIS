@@ -8,6 +8,8 @@ A basic instant mapping demo using PostGIS, node-restify, LeafLet Maps and map t
 Related post on OpenShift.com: [https://www.openshift.com/blogs/instant-mapping-applications-with-postgis-and-nodejs](https://www.openshift.com/blogs/instant-mapping-applications-with-postgis-and-nodejs)
 
 ## Instant Provisioning on OpenShift
+[![Build Status](https://build-shifter.rhcloud.com:443/buildStatus/icon?job=nodegis-build)](http://nodegis-shifter.rhcloud.com)
+
 To deploy a clone of this application using the [`rhc` command line tool](http://rubygems.org/gems/rhc), type:
 
     rhc app create parks nodejs-0.10 postgresql-9.2 --from-code=https://github.com/ryanj/restify-postGIS.git
