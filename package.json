@@ -8,11 +8,10 @@
     "npm": "1.2.x"
   },
   "dependencies": {
-    "config-multipaas": "^0.0.3",
-    "requireindex": "1.0.x",
-    "restify": "2.5.x",
-    "pg-query": "~0.7.0",
-    "pg": "~2.8.3"
+    "restify": "^2.8.3",
+    "config-multipaas": "^0.0.5",
+    "pg": "^3.6.0",
+    "pg-query": "^0.10.0"
   },
   "devDependencies": {
     "request": "2.24.x"

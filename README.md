@@ -1,6 +1,9 @@
 # Map of National Parks and Historic Sites
 *powered by RESTify, PostGIS, and Leaflet maps*
 
+[![Build Status](https://build-shifter.rhcloud.com:443/buildStatus/icon?job=nodegis-build)](http://nodegis-shifter.rhcloud.com)
+[![Dependency Check](https://david-dm.org/ryanj/restify-postGIS.png)](https://david-dm.org/ryanj/restify-postGIS)
+
 A basic instant mapping demo using PostGIS, node-restify, LeafLet Maps and map tiles from Stamen, to visualize the locations of major National Parks and Historic Sites.
 
 <a href='http://nodegis-shifter.rhcloud.com/'><img src='https://www.openshift.com/sites/default/files/Parks_preview.png'/></a>
@@ -8,7 +11,6 @@ A basic instant mapping demo using PostGIS, node-restify, LeafLet Maps and map t
 Related post on OpenShift.com: [https://www.openshift.com/blogs/instant-mapping-applications-with-postgis-and-nodejs](https://www.openshift.com/blogs/instant-mapping-applications-with-postgis-and-nodejs)
 
 ## Instant Provisioning on OpenShift
-[![Build Status](https://build-shifter.rhcloud.com:443/buildStatus/icon?job=nodegis-build)](http://nodegis-shifter.rhcloud.com)
 
 To deploy a clone of this application using the [`rhc` command line tool](http://rubygems.org/gems/rhc), type:
 
