@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "restify": "^2.8.3",
-    "config-multipaas": "^0.0.5",
+    "config-multipaas": "0.0.6",
     "pg": "^3.6.0",
     "pg-query": "^0.10.0"
   },
   "devDependencies": {
-    "request": "2.24.x"
+    "tap": "^0.4.13"
   },
   "repository": {
     "type": "git",
