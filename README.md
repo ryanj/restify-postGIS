@@ -1,7 +1,7 @@
 # Map of National Parks and Historic Sites 
 *powered by RESTify, PostGIS, and Leaflet maps*
 
-[![Build Status](http://img.shields.io/jenkins/s/https/build-shifter.rhcloud.com/nodegis-build.svg)](https://build-shifter.rhcloud.com/job/nodegis-build/) [![Dependency Check](http://img.shields.io/david/ryanj/restify-postGIS.svg)](https://david-dm.org/ryanj/restify-postGIS) [![Deploy](https://img.shields.io/badge/Launch_on-OpenShift-brightgreen.svg)](https://openshift.redhat.com/app/console/application_type/custom?name=parks&cartridges%5B%5D=nodejs-0.10&cartridges%5B%5D=postgresql-9.2&initial_git_url=https%3A%2F%2Fgithub.com%2Fryanj%2Frestify-postGIS.git)
+[![Build Status](http://img.shields.io/jenkins/s/https/build-shifter.rhcloud.com/nodegis-build.svg)](https://build-shifter.rhcloud.com/job/nodegis-build/) [![Dependency Check](http://img.shields.io/david/ryanj/restify-postGIS.svg)](https://david-dm.org/ryanj/restify-postGIS) [![Launch on OpenShift](https://launch-shifter.rhcloud.com/launch.svg)](https://openshift.redhat.com/app/console/application_type/custom?name=parks&cartridges%5B%5D=nodejs-0.10&cartridges%5B%5D=postgresql-9.2&initial_git_url=https%3A%2F%2Fgithub.com%2Fryanj%2Frestify-postGIS.git)
 
 A basic instant mapping demo using PostGIS, node-restify, LeafLet Maps and map tiles from Stamen, to visualize the locations of major National Parks and Historic Sites.
 
