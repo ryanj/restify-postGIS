@@ -6,8 +6,8 @@ var config      = cc({
 })
 var pg_config   = config.get('POSTGRESQL_DB_URL'),
     table_name  = config.get('table_name');
-pg.connectionParameters = pg_config+'/'+table_name;
-console.log(pg_config+'/'+table_name);
+pg.connectionParameters = pg_config+table_name;
+console.log(pg_config+table_name);
 
 var points = require('../parkcoord.json');
 var error_response = "data already exists - bypassing db initialization step\n";
