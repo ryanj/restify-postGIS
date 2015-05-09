@@ -22,6 +22,7 @@
   },
   "scripts": {
     "start": "node server.js",
+    "postinstall": "npm run initdb",
     "build": "npm run initdb",
     "flushdb": "node bin/flushdb.js",
     "initdb": "node bin/bootstrap.js"
