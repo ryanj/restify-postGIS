@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "restify": "^2.8.3",
-    "config-multipaas": "0.1.0",
+    "config-multipaas": "0.2.1",
     "pg": "^3.6.0",
     "pg-query": "^0.10.0"
   },
