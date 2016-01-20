@@ -3,7 +3,6 @@
 <head>
   <title>Map of Parks and Historic Sites</title>
     <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
-    <link rel="stylesheet" href="css/ribbon.css" />
   <!--[if lte IE 8]>
       <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
   <![endif]-->
@@ -24,12 +23,22 @@
     }
  
     #map { z-index: 1;}
-    #title { z-index: 2; position: absolute; left: 10px; }
+    #title { z-index: 2; position: absolute; left: 10px; margin-top: 10px;}
+    #launcher {display:none;}
+    @media screen and (min-width:100px){
+      #launcher { display:block; left: 10px; z-index: 2; position: absolute; bottom: 35px; width: 25%}
+    }
+    @media screen and (min-width:790px){
+      #launcher { bottom: 13px;}
+    }
   </style>
  
 </head>
 <body>
   <h1 id="title">National Parks</h1>
+  <span id="launcher">
+    <a href="https://openshift.redhat.com/app/console/application_types/custom?name=parks&initial_git_url=https%3A%2F%2Fgithub.com/ryanj/restify-postGIS.git&cartridges[]=nodejs-0.10&cartridges[]=postgresql-9.2"><img alt="Run me on OpenShift" src="https://launch-shifter.rhcloud.com/launch/RUN%20ME%20ON.svg" style="max-width:100%;"></a>
+  </span>
   <div id="map"></div>
   <script src="//cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
   <script>
@@ -66,6 +75,5 @@
     map.whenReady(getPins)
 
   </script>
-  <span id="fossribbon"><a href="https://openshift.redhat.com/app/console/application_types/custom?name=parks&initial_git_url=https%3A%2F%2Fgithub.com/ryanj/restify-postGIS.git&cartridges[]=nodejs-0.10&cartridges[]=postgresql-9.2">Run me on OpenShift</a></span>
 </body>
 </html>
