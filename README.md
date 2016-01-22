@@ -11,6 +11,26 @@ A basic instant mapping demo using PostGIS, node-restify, LeafLet Maps and map t
 
 Related post on OpenShift.com: [https://www.openshift.com/blogs/instant-mapping-applications-with-postgis-and-nodejs](https://www.openshift.com/blogs/instant-mapping-applications-with-postgis-and-nodejs)
 
+## Deploying on OpenShift V3
+
+You'll need the `oc` command line tool to install this project in a Docker-based OpenShift environment.  The cli tool binary is available via the [`openshift/origin` releases page](https://github.com/openshift/origin/releases/).
+
+Use [vagrant](http://openshift.org/vm) or [ansible](https://github.com/openshift/openshift-ansible) to setup your own deployment of OpenShift, then use `oc login` to authenticate. This project expects the [standard builder images and db services](https://github.com/openshift/origin/tree/master/examples/image-streams) to be installed as a pre-requisite.
+
+To get started, we will need to create a new project to house the application:
+
+    oc new-project parks
+
+Launch the application from the command line using the provided kubernetes template:
+
+    oc new-app -f https://raw.githubusercontent.com/ryanj/restify-postGIS/master/restify-postgis-template.json
+
+Or, optionally install the template to make it easier to launch via the web:
+
+    oc create -f https://raw.githubusercontent.com/ryanj/restify-postGIS/master/restify-postgis-template.json
+
+Then, view your new project in the openshift web console, clicking on "Add to Project" to find the template. Finally, confirm the application configuration details to launch the app using your browser.
+
 ## Instant Provisioning on OpenShift
 
 To deploy a clone of this application using the [`rhc` command line tool](http://rubygems.org/gems/rhc), type:
