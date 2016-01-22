@@ -9,8 +9,12 @@ console.log(pg.connectionParameters);
 var error_response = "data already exists - bypassing db initialization step\n";
 
 function createDBSchema(err, rows, result) {
-  if(err && err.code == "ECONNREFUSED"){
-    return console.error("DB connection unavailable, see README notes for setup assistance\n", err);
+  if(err){
+    if(err.code == "ECONNREFUSED"){
+      return console.error("DB connection unavailable, see README notes for setup assistance\n", err);
+    }else{
+      return console.error(err);
+    }
   }
   var query = "CREATE TABLE "+table_name+" ( gid serial NOT NULL, name character varying(240), the_geom geometry, CONSTRAINT "+table_name+ "_pkey PRIMARY KEY (gid), CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2), CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL),CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4326) ) WITH ( OIDS=FALSE );";
   pg(query, addSpatialIndex);
